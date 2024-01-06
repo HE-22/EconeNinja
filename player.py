@@ -13,6 +13,7 @@ class Player:
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.image)
         self.facing_right = False
+        self.score = 0  # Added score attribute
 
     def load_sprites(self):
         def load_sequence(path_format, count):
@@ -92,7 +93,30 @@ class Player:
         self.current_sprite = 0
         self.state = "idle"
         self.facing_right = False
+        self.score = 0  # Reset score
         self.update_sprite()
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
+
+    # Added collect_coins method
+    def collect_coins(self, coin_spawner):
+        for coin in coin_spawner.active_coins[:]:
+            offset_x = coin.rect.left - self.rect.left
+            offset_y = coin.rect.top - self.rect.top
+            if self.mask.overlap(coin.mask, (offset_x, offset_y)):
+                print("Coin collected!")
+                coin_spawner.active_coins.remove(coin)
+                self.score += 1
+                print(f"Score: {self.score}")
+                coin_spawner.add_coins(1)
+                coin_spawner.play_coin_sound()  # Play coin collection sound
+
+    # Added check_projectile_collisions method
+    def check_projectile_collisions(self, projectile_shooter, on_collision):
+        for projectile in projectile_shooter.active_projectiles:
+            offset_x = projectile.rect.left - self.rect.left
+            offset_y = projectile.rect.top - self.rect.top
+            if self.mask.overlap(projectile.mask, (offset_x, offset_y)):
+                print("Collision detected!")
+                on_collision()  # Callback function to handle collision
