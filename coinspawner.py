@@ -4,9 +4,10 @@ from coin import Coin
 
 
 class CoinSpawner:
-    def __init__(self, screen_width, screen_height, coin_count=5):
+    def __init__(self, screen_width, screen_height, coin_count=4):
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.starting_coin_count = coin_count
         self.active_coins = [
             Coin(self.screen_width, self.screen_height) for _ in range(coin_count)
         ]
@@ -35,3 +36,11 @@ class CoinSpawner:
         - Clears all coins from the game.
         """
         self.active_coins = []
+
+    def reset(self):
+        """
+        - Resets the coin spawner by clearing all coins and adding new ones.
+        - Args: coin_count (int): number of coins to add after reset
+        """
+        self.clear_coins()
+        self.add_coins(self.starting_coin_count)

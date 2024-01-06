@@ -16,8 +16,7 @@ def reset_game_state(
 ):  # Added coin_spawner parameter
     player.reset()
     projectile_shooter.reset()
-    coin_spawner.clear_coins()
-    coin_spawner.add_coins(1)
+    coin_spawner.reset()
 
     # Added this line to spawn a new coin
     pygame.mixer.music.stop()
@@ -44,7 +43,7 @@ def main():
     pygame.mixer.music.play(loops=-1)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("eConeNinja")  # Set the window title
+    pygame.display.set_caption("EConeNinja")  # Set the window title
     clock = pygame.time.Clock()
     player = Player(SCREEN_WIDTH, SCREEN_HEIGHT)
     projectile_shooter = ProjectileShooter(SCREEN_WIDTH, SCREEN_HEIGHT, 5)
@@ -53,7 +52,7 @@ def main():
         SCREEN_WIDTH, SCREEN_HEIGHT
     )  # Changed this line to spawn no coins initially
 
-    coin_spawner.add_coins(1)  # Added this line to spawn the first coin
+    # coin_spawner.add_coins(1)  # Added this line to spawn the first coin
 
     projectile_timer = pygame.USEREVENT + 1
     pygame.time.set_timer(projectile_timer, 500)
@@ -73,11 +72,11 @@ def main():
                 projectile_shooter.increase_difficulty()
 
         player.check_movement()
-
         player.update_sprite()
 
         background.draw()
         coin_spawner.draw_coins(screen)  # Added this line
+
         projectile_shooter.move_projectiles()
         projectile_shooter.draw_projectiles(screen)
 
@@ -88,7 +87,7 @@ def main():
         def handle_collision():
             nonlocal death_animation_frame  # Access the outer death_animation_frame variable
             death_animation_frame = 0  # Reset the death animation frame counter
-            player.play_death_sound()  # Play the death sound
+            # player.play_death_sound()  # Play the death sound
 
         player.check_projectile_collisions(projectile_shooter, handle_collision)
 
@@ -98,7 +97,7 @@ def main():
                 player.current_sprite = death_animation_frame
                 player.update_sprite()
                 death_animation_frame += 1
-                player.play_death_sound()  # Play the death sound
+                # player.play_death_sound()  # Play the death sound
 
             else:
                 new_high_score = update_high_score(
