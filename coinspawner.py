@@ -29,3 +29,9 @@ class CoinSpawner:
 
     def play_coin_sound(self):  # Modified this method
         random.choice(self.coin_sounds).play()  # Added this line
+
+    def clear_coins(self):
+        """
+        - Clears all coins from the game.
+        """
+        self.active_coins = []

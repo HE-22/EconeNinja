@@ -1,10 +1,14 @@
+import logging
 import pygame
+import time  # Added time import for delay
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, screen_width, screen_height):
+        self.screen_width = screen_width
+        self.screen_height = screen_height
         self.x, self.y = 100, 100
-        self.speed = 5
+        self.speed = 6
         self.current_sprite = 0
         self.state = "idle"
         self.scale_factor = (60, 60)
@@ -14,6 +18,10 @@ class Player:
         self.mask = pygame.mask.from_surface(self.image)
         self.facing_right = False
         self.score = 0  # Added score attribute
+        self.is_dead = False  # Added is_dead attribute
+        self.death_sound = pygame.mixer.Sound(
+            "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/sfx/bruh.mp3"
+        )  # Load death sound
 
     def load_sprites(self):
         def load_sequence(path_format, count):
@@ -35,11 +43,18 @@ class Player:
             "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/sprites/02-Run/MN_NINJA_Run_00{}.png",
             10,
         )
+        self.dead_sprites = load_sequence(
+            "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/sprites/06-Dead/MN_NINJA_Dead_00{}.png",
+            8,
+        )
 
     def update_sprite(self):
-        sprite_list = (
-            self.idle_sprites if self.state == "idle" else self.running_sprites
-        )
+        if self.is_dead:  # If player is dead, play death animation
+            sprite_list = self.dead_sprites
+        else:
+            sprite_list = (
+                self.idle_sprites if self.state == "idle" else self.running_sprites
+            )
         self.current_sprite = (self.current_sprite + 0.1) % len(sprite_list)
         self.image = sprite_list[int(self.current_sprite)]
         if self.facing_right:
@@ -47,11 +62,29 @@ class Player:
         self.rect.size = self.image.get_size()
         self.mask = pygame.mask.from_surface(self.image)
 
+    def is_in_bounds(self, dx, dy):
+        """
+        - Check if the player is within the screen bounds after the proposed move.
+        - Args: dx (int): proposed change in x position, dy (int): proposed change in y position
+        - Returns: bool: True if the move keeps the player within bounds, False otherwise
+        """
+        proposed_x = self.x + dx
+        proposed_y = self.y + dy
+        return (
+            0 <= proposed_x <= self.screen_width
+            and 0 <= proposed_y <= self.screen_height
+        )
+
     def move(self, dx, dy):
-        self.x += dx
-        self.y += dy
-        self.rect.topleft = (self.x, self.y)
-        self.mask = pygame.mask.from_surface(self.image)  # Update mask position
+        """
+        - Move the player by dx and dy if the move is within bounds.
+        - Args: dx (int): change in x position, dy (int): change in y position
+        """
+        if self.is_in_bounds(dx, dy):
+            self.x += dx
+            self.y += dy
+            self.rect.topleft = (self.x, self.y)
+            self.mask = pygame.mask.from_surface(self.image)  # Update mask position
 
     def move_right(self):
         self.move(self.speed, 0)
@@ -77,15 +110,23 @@ class Player:
 
     def check_movement(self):
         keys = pygame.key.get_pressed()
-        if not any(
-            [
-                keys[pygame.K_LEFT],
-                keys[pygame.K_RIGHT],
-                keys[pygame.K_UP],
-                keys[pygame.K_DOWN],
-            ]
-        ):
-            self.idle()
+        moving = False  # Flag to check if the player is moving
+
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            self.move_left()
+            moving = True
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            self.move_right()
+            moving = True
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            self.move_up()
+            moving = True
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            self.move_down()
+            moving = True
+
+        if not moving:  # If none of the movement keys are pressed
+            self.idle()  # Set the player state to 'idle'
 
     def reset(self):
         self.x, self.y = 100, 100
@@ -94,6 +135,7 @@ class Player:
         self.state = "idle"
         self.facing_right = False
         self.score = 0  # Reset score
+        self.is_dead = False  # Reset is_dead
         self.update_sprite()
 
     def draw(self, screen):
@@ -114,9 +156,31 @@ class Player:
 
     # Added check_projectile_collisions method
     def check_projectile_collisions(self, projectile_shooter, on_collision):
+        """
+        - Checks for collisions between the player and projectiles.
+        - If a collision is detected, sets the player's is_dead attribute to True.
+        - Calls the on_collision callback function to handle the collision.
+        - Args:
+            - projectile_shooter: The ProjectileShooter instance.
+            - on_collision: Callback function to handle collision.
+        """
         for projectile in projectile_shooter.active_projectiles:
             offset_x = projectile.rect.left - self.rect.left
             offset_y = projectile.rect.top - self.rect.top
             if self.mask.overlap(projectile.mask, (offset_x, offset_y)):
-                print("Collision detected!")
+                logging.info("Collision detected!")
+                self.is_dead = True  # Set is_dead to True when collision is detected
                 on_collision()  # Callback function to handle collision
+
+    def play_death_sound(self):
+        """
+        - Plays the death sound.
+        """
+        self.death_sound.play()  # Play death sound
+
+    # Added play_death_animation method
+    def play_death_animation(self):
+        self.state = "dead"
+        for i in range(len(self.dead_sprites)):  # Loop through death animation frames
+            self.current_sprite = i
+            self.update_sprite()
