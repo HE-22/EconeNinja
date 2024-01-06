@@ -10,7 +10,7 @@ from coinspawner import CoinSpawner
 from high_score import update_high_score, get_high_score
 from start_screen import StartScreen
 
-SHOW_START_SCREEN = False
+SHOW_START_SCREEN = True
 
 
 def reset_game_state(player, projectile_shooter, coin_spawner):
@@ -49,7 +49,7 @@ def main():
     coin_spawner = CoinSpawner(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     projectile_timer = pygame.USEREVENT + 1
-    pygame.time.set_timer(projectile_timer, 500)
+    pygame.time.set_timer(projectile_timer, 5000)  # Change direction every 5 seconds
     difficulty_timer = pygame.USEREVENT + 2
     pygame.time.set_timer(difficulty_timer, 3000)
 
@@ -61,9 +61,7 @@ def main():
                 pygame.quit()
                 sys.exit()
             elif event.type == projectile_timer:
-                projectile_shooter.is_shooting = False
-                projectile_shooter.switch_direction()
-                projectile_shooter.is_shooting = True
+                projectile_shooter.set_direction(random.uniform(0, 2 * math.pi))
 
         player.check_movement()
         player.update_sprite()

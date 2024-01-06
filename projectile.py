@@ -5,10 +5,24 @@ import math
 
 class Projectile:
     def __init__(self, screen_width: int, screen_height: int, angle: float = math.pi):
-        self.x = screen_width  # Start projectiles from the right of the screen
-        self.y = random.randint(0, screen_height)
+        if math.pi / 4 <= angle < 3 * math.pi / 4:
+            # Spawn from top edge
+            self.x = random.randint(0, screen_width)
+            self.y = 0
+        elif 3 * math.pi / 4 <= angle < 5 * math.pi / 4:
+            # Spawn from right edge
+            self.x = screen_width
+            self.y = random.randint(0, screen_height)
+        elif 5 * math.pi / 4 <= angle < 7 * math.pi / 4:
+            # Spawn from bottom edge
+            self.x = random.randint(0, screen_width)
+            self.y = screen_height
+        else:
+            # Spawn from left edge
+            self.x = 0
+            self.y = random.randint(0, screen_height)
         self.speed = random.randint(5, 10)  # Increase speed range
-        self.angle = angle  # Make projectiles move to the left
+        self.angle = angle  # Make projectiles move in the set direction
         self.dx = self.speed * math.cos(self.angle)
         self.dy = self.speed * math.sin(self.angle)
 
@@ -37,6 +51,14 @@ class Projectile:
         Call this method if the sprite image changes.
         """
         self.mask = pygame.mask.from_surface(self.image)
+
+    def set_direction(self, angle: float):
+        """
+        Sets a new direction for the projectile.
+        """
+        self.angle = angle
+        self.dx = self.speed * math.cos(self.angle)
+        self.dy = self.speed * math.sin(self.angle)
 
     def reset(self, screen_width: int, screen_height: int):
         directions = {
