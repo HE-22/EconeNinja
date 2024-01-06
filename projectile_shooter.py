@@ -1,25 +1,32 @@
 import pygame
 from projectile import Projectile
 import math
+import random
+from difficulty_manager import DifficultyManager
 
 
 class ProjectileShooter:
-    def __init__(self, screen_width: int, screen_height: int, projectile_count=5):
+    def __init__(
+        self,
+        screen_width: int,
+        screen_height: int,
+        difficulty_manager: DifficultyManager,
+    ):
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.active_projectiles = []
         self.current_direction = math.pi  # Default direction to the left
-        self.projectile_count = projectile_count
+        self.difficulty_manager = difficulty_manager
 
-        for _ in range(projectile_count):
-            self.spawn_projectile()
+        self.update_projectiles()
 
     def spawn_projectile(self):
         """
         Spawns a new projectile in the current direction.
         """
+        speed = self.difficulty_manager.get_projectile_speed()
         projectile = Projectile(
-            self.screen_width, self.screen_height, self.current_direction
+            self.screen_width, self.screen_height, self.current_direction, int(speed)
         )
         self.active_projectiles.append(projectile)
 
@@ -45,10 +52,20 @@ class ProjectileShooter:
                 self.spawn_projectile()  # Keep the number of projectiles consistent
             else:
                 projectile.draw(screen)
+
     def reset(self):
         """
         Resets the state of the ProjectileShooter.
         """
         self.active_projectiles = []
-        for _ in range(self.projectile_count):
+        self.update_projectiles()
+
+    def update_projectiles(self):
+        """
+        Updates the number and speed of projectiles based on the current difficulty level.
+        """
+        while (
+            len(self.active_projectiles)
+            < self.difficulty_manager.get_projectile_count()
+        ):
             self.spawn_projectile()

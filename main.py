@@ -1,7 +1,9 @@
 import pygame
 import sys
 import math
+import yaml
 import random
+
 from player import Player
 from projectile_shooter import ProjectileShooter
 from retry_screen import RetryScreen
@@ -9,19 +11,34 @@ from background import Background
 from coinspawner import CoinSpawner
 from high_score import update_high_score, get_high_score
 from start_screen import StartScreen
+from difficulty_manager import DifficultyManager
+from debug_overlay import DebugOverlay
 
-SHOW_START_SCREEN = True
+# Load configuration from config.yaml
+with open("config.yaml", "r") as config_file:
+    config = yaml.safe_load(config_file)
+
+HYPERLOOP_AUDIO_PATH = config["hyperloop_audio_path"]
+SCREEN_WIDTH = config["screen"]["width"]
+SCREEN_HEIGHT = config["screen"]["height"]
+CLOCK_TICK_RATE = config["clock_tick_rate"]
+PROJECTILE_TIMER_INTERVAL = config["projectile_timer_interval"]
+DIFFICULTY_TIMER_INTERVAL = config["difficulty_timer_interval"]
+DIFFICULTY_UPDATE_VALUE = config["difficulty_update_value"]
+GAME_TITLE = config["game_title"]
+DEBUG_MODE = config["debug_mode"]
 
 
-def reset_game_state(player, projectile_shooter, coin_spawner):
+def reset_game_state(player, projectile_shooter, coin_spawner, difficulty_manager):
     player.reset()
     projectile_shooter.reset()
     coin_spawner.reset()
+    difficulty_manager.reset()
+
+    projectile_shooter.update_projectiles()
 
     pygame.mixer.music.stop()
-    pygame.mixer.music.load(
-        "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/hyperloop.mp3"
-    )
+    pygame.mixer.music.load(HYPERLOOP_AUDIO_PATH)
     pygame.mixer.music.play(loops=-1)
 
 
@@ -29,39 +46,68 @@ def main():
     pygame.init()
     pygame.mixer.init()
 
-    SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+    clock = pygame.time.Clock()  # Add this line
+
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption(GAME_TITLE)
+
+    debug_overlay = DebugOverlay()
+
+    SHOW_START_SCREEN = not DEBUG_MODE
+    INVINCIBLE = DEBUG_MODE
+
+    difficulty_manager = DifficultyManager()
 
     if SHOW_START_SCREEN:
         start_screen = StartScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
         start_screen.run()
 
-    pygame.mixer.music.load(
-        "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/hyperloop.mp3"
-    )
+    pygame.mixer.music.load(HYPERLOOP_AUDIO_PATH)
     pygame.mixer.music.play(loops=-1)
 
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("EConeNinja")
-    clock = pygame.time.Clock()
     player = Player(SCREEN_WIDTH, SCREEN_HEIGHT)
-    projectile_shooter = ProjectileShooter(SCREEN_WIDTH, SCREEN_HEIGHT, 5)
+    player.invincible = INVINCIBLE
+
+    projectile_shooter = ProjectileShooter(
+        SCREEN_WIDTH, SCREEN_HEIGHT, difficulty_manager
+    )
     background = Background(screen)
     coin_spawner = CoinSpawner(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     projectile_timer = pygame.USEREVENT + 1
-    pygame.time.set_timer(projectile_timer, 5000)  # Change direction every 5 seconds
+    pygame.time.set_timer(
+        projectile_timer, int(difficulty_manager.get_direction_change_speed())
+    )  # Change direction every 5 seconds
     difficulty_timer = pygame.USEREVENT + 2
-    pygame.time.set_timer(difficulty_timer, 3000)
+    pygame.time.set_timer(
+        difficulty_timer, DIFFICULTY_TIMER_INTERVAL
+    )  # Increase difficulty every 30 seconds
 
     death_animation_frame = 0
 
+    last_time = pygame.time.get_ticks()
+
     while True:
+        current_time = pygame.time.get_ticks()
+        delta_time = current_time - last_time
+        last_time = current_time
+
+        difficulty_manager.update(delta_time)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == projectile_timer:
                 projectile_shooter.set_direction(random.uniform(0, 2 * math.pi))
+            elif event.type == difficulty_timer:
+                print(difficulty_manager)
+            elif (
+                DEBUG_MODE and event.type == pygame.KEYDOWN and event.key == pygame.K_r
+            ):
+                reset_game_state(
+                    player, projectile_shooter, coin_spawner, difficulty_manager
+                )
 
         player.check_movement()
         player.update_sprite()
@@ -94,11 +140,24 @@ def main():
                 if not retry_result:
                     sys.exit()
                 else:
-                    reset_game_state(player, projectile_shooter, coin_spawner)
+                    reset_game_state(
+                        player, projectile_shooter, coin_spawner, difficulty_manager
+                    )
 
         player.draw(screen)
+
+        # Draw debug overlay
+        if DEBUG_MODE:
+            debug_overlay.add_value("Player X", player.x)
+            debug_overlay.add_value("Player Y", player.y)
+            debug_overlay.add_value("Score", player.score)
+            debug_overlay.add_value(
+                "Difficulty", difficulty_manager.get_difficulty_factor()
+            )
+            debug_overlay.draw(screen)
+
         pygame.display.flip()
-        clock.tick_busy_loop(60)
+        clock.tick_busy_loop(CLOCK_TICK_RATE)
 
 
 if __name__ == "__main__":

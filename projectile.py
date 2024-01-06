@@ -4,7 +4,13 @@ import math
 
 
 class Projectile:
-    def __init__(self, screen_width: int, screen_height: int, angle: float = math.pi):
+    def __init__(
+        self,
+        screen_width: int,
+        screen_height: int,
+        angle: float = math.pi,
+        speed: int = 5,
+    ):
         if math.pi / 4 <= angle < 3 * math.pi / 4:
             # Spawn from top edge
             self.x = random.randint(0, screen_width)
@@ -21,7 +27,7 @@ class Projectile:
             # Spawn from left edge
             self.x = 0
             self.y = random.randint(0, screen_height)
-        self.speed = random.randint(5, 10)  # Increase speed range
+        self.speed = speed
         self.angle = angle  # Make projectiles move in the set direction
         self.dx = self.speed * math.cos(self.angle)
         self.dy = self.speed * math.sin(self.angle)
@@ -40,7 +46,7 @@ class Projectile:
         self.x += self.dx
         self.y += self.dy
         self.rect.topleft = (int(self.x), int(self.y))
-        print(f"Projectile moved to ({self.x}, {self.y})")
+        # print(f"Projectile moved to ({self.x}, {self.y})")
 
     def draw(self, screen: pygame.Surface):
         screen.blit(self.image, self.rect)
@@ -80,7 +86,6 @@ class Projectile:
         elif self.angle == 3 * math.pi / 2:  # left
             self.x = screen_width
             self.y = random.randint(0, screen_height)
-        self.speed = random.randint(5, 10)  # Increase speed range
         self.dx = self.speed * math.cos(self.angle)
         self.dy = self.speed * math.sin(self.angle)
 

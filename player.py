@@ -22,6 +22,7 @@ class Player:
         self.facing_right = False
         self.score = 0  # Added score attribute
         self.is_dead = False  # Added is_dead attribute
+        self.invincible = False  # Added invincible attribute
         self.death_sound = pygame.mixer.Sound(
             "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/sfx/bruh.mp3"
         )  # Load death sound
@@ -157,10 +158,10 @@ class Player:
             offset_x = coin.rect.left - self.rect.left
             offset_y = coin.rect.top - self.rect.top
             if self.mask.overlap(coin.mask, (offset_x, offset_y)):
-                print("Coin collected!")
+                # print("Coin collected!")
                 coin_spawner.active_coins.remove(coin)
                 self.score += 1
-                print(f"Score: {self.score}")
+                # print(f"Score: {self.score}")
                 coin_spawner.add_coins(1)
                 coin_spawner.play_coin_sound()  # Play coin collection sound
 
@@ -174,6 +175,9 @@ class Player:
             - projectile_shooter: The ProjectileShooter instance.
             - on_collision: Callback function to handle collision.
         """
+        if self.invincible:
+            return  # Skip collision detection when the player is invincible
+
         for projectile in projectile_shooter.active_projectiles:
             offset_x = projectile.rect.left - self.rect.left
             offset_y = projectile.rect.top - self.rect.top
