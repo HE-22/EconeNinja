@@ -8,6 +8,8 @@ from coinspawner import CoinSpawner  # Added this line
 from high_score import update_high_score, get_high_score  # Added get_high_score import
 from start_screen import StartScreen  # Added this line
 
+SHOW_START_SCREEN = False  # Set a flag to enable or disable the start screen
+
 
 def reset_game_state(
     player, projectile_shooter, coin_spawner
@@ -32,8 +34,9 @@ def main():
     SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 
     # Create an instance of IntroScreen and run it
-    start_screen = StartScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
-    start_screen.run()
+    if SHOW_START_SCREEN:
+        start_screen = StartScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
+        start_screen.run()
 
     pygame.mixer.music.load(
         "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/hyperloop.mp3"
