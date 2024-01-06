@@ -112,16 +112,16 @@ class Player:
         keys = pygame.key.get_pressed()
         moving = False  # Flag to check if the player is moving
 
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        if keys[pygame.K_LEFT] or keys[pygame.K_a] or keys[pygame.K_j]:
             self.move_left()
             moving = True
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d] or keys[pygame.K_l]:
             self.move_right()
             moving = True
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
+        if keys[pygame.K_UP] or keys[pygame.K_w] or keys[pygame.K_i]:
             self.move_up()
             moving = True
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+        if keys[pygame.K_DOWN] or keys[pygame.K_s] or keys[pygame.K_k]:
             self.move_down()
             moving = True
 
