@@ -65,10 +65,10 @@ class RetryScreen:
             "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/demon_game_over.mp3"
         )
 
-        # Load the main music as a Sound object
-        self.game_over_music = pygame.mixer.Sound(
-            "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/game_over_music.ogg"
-        )
+        # Paths to the high score and normal game over music
+        self.high_score_music = "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/highscore.ogg"
+        self.normal_score_music = "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/game_over_music.ogg"
+        self.new_high_score = new_high_score
 
     def show(self):
         # Stop current music if any
@@ -76,13 +76,23 @@ class RetryScreen:
 
         # Play both sounds
         self.game_over_sound.play()
-        self.game_over_music.play()
+
+        # Check if a new high score was achieved and play the appropriate music
+        if self.new_high_score:
+            pygame.mixer.music.load(self.high_score_music)
+        else:
+            pygame.mixer.music.load(self.normal_score_music)
+
+        pygame.mixer.music.play()
 
         # Display retry screen
         retry_screen = pygame.Surface(self.screen.get_size())
         retry_screen.fill((0, 0, 0))
         retry_screen.blit(self.text3, self.textpos3)
-        retry_screen.blit(self.text3_score, (self.textpos3[0] + self.text3.get_width(), self.textpos3[1]))  # Blit player's score next to "Your score" text
+        retry_screen.blit(
+            self.text3_score,
+            (self.textpos3[0] + self.text3.get_width(), self.textpos3[1]),
+        )  # Blit player's score next to "Your score" text
         retry_screen.blit(self.text4, self.textpos4)
         retry_screen.blit(self.text, self.textpos)
         retry_screen.blit(self.text2, self.textpos2)
@@ -96,10 +106,10 @@ class RetryScreen:
                     event.type == pygame.KEYDOWN and event.key == pygame.K_q
                 ):
                     self.game_over_sound.stop()
-                    self.game_over_music.stop()
+                    pygame.mixer.music.stop()
                     pygame.quit()
                     return False  # Do not retry
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                     self.game_over_sound.stop()
-                    self.game_over_music.stop()
+                    pygame.mixer.music.stop()
                     return True  # Retry

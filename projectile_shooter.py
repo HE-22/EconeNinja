@@ -25,7 +25,7 @@ class ProjectileShooter:
 
     def increase_difficulty(self):
         for projectile in self.active_projectiles:
-            projectile.speed += 1
+            projectile.speed += 0.1  # Increase speed by a smaller amount
         self.add_projectiles(1)
 
     def move_projectiles(self):
