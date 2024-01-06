@@ -6,7 +6,7 @@ from retry_screen import RetryScreen
 from background import Background
 from coinspawner import CoinSpawner  # Added this line
 from high_score import update_high_score, get_high_score  # Added get_high_score import
-from intro_screen import IntroScreen  # Added this line
+from start_screen import StartScreen  # Added this line
 
 
 def reset_game_state(
@@ -32,8 +32,8 @@ def main():
     SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 
     # Create an instance of IntroScreen and run it
-    intro_screen = IntroScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
-    intro_screen.run()
+    start_screen = StartScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
+    start_screen.run()
 
     pygame.mixer.music.load(
         "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/hyperloop.mp3"
