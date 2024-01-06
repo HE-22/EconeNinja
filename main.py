@@ -6,6 +6,7 @@ from retry_screen import RetryScreen
 from background import Background
 from coinspawner import CoinSpawner  # Added this line
 from high_score import update_high_score, get_high_score  # Added get_high_score import
+from intro_screen import IntroScreen  # Added this line
 
 
 def reset_game_state(
@@ -27,15 +28,20 @@ def reset_game_state(
 def main():
     pygame.init()
     pygame.mixer.init()
+
+    SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+
+    # Create an instance of IntroScreen and run it
+    intro_screen = IntroScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
+    intro_screen.run()
+
     pygame.mixer.music.load(
         "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/hyperloop.mp3"
     )
     pygame.mixer.music.play(loops=-1)
 
-    SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
-
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Econe Ninja")  # Set the window title
+    pygame.display.set_caption("eConeNinja")  # Set the window title
     clock = pygame.time.Clock()
     player = Player(SCREEN_WIDTH, SCREEN_HEIGHT)
     projectile_shooter = ProjectileShooter(SCREEN_WIDTH, SCREEN_HEIGHT, 5)
