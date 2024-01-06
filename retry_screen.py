@@ -87,17 +87,23 @@ class RetryScreen:
 
         # Display retry screen
         retry_screen = pygame.Surface(self.screen.get_size())
-        retry_screen.fill((0, 0, 0))
-        retry_screen.blit(self.text3, self.textpos3)
-        retry_screen.blit(
+        retry_screen.set_alpha(128)  # Make the retry screen transparent
+        retry_screen.fill((0, 0, 0))  # Fill the surface with a transparent color
+        self.screen.blit(
+            retry_screen, (0, 0)
+        )  # Blit the transparent surface onto the main screen
+
+        # Blit text directly onto the main screen to keep it fully opaque
+        self.screen.blit(self.text3, self.textpos3)
+        self.screen.blit(
             self.text3_score,
             (self.textpos3[0] + self.text3.get_width(), self.textpos3[1]),
         )  # Blit player's score next to "Your score" text
-        retry_screen.blit(self.text4, self.textpos4)
-        retry_screen.blit(self.text, self.textpos)
-        retry_screen.blit(self.text2, self.textpos2)
-        self.screen.blit(retry_screen, (0, 0))
-        pygame.display.flip()
+        self.screen.blit(self.text4, self.textpos4)
+        self.screen.blit(self.text, self.textpos)
+        self.screen.blit(self.text2, self.textpos2)
+
+        pygame.display.flip()  # Update the display
 
         # Wait for player to press R to retry or Q to quit
         while True:

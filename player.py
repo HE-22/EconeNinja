@@ -84,12 +84,12 @@ class Player:
         - Args: dx (int): change in x position, dy (int): change in y position
         """
         if self.is_in_bounds(dx, dy):
-            print(f"Moving from ({self.x}, {self.y})")  # Debugging print statement
+            # print(f"Moving from ({self.x}, {self.y})")  # Debugging print statement
             self.x += dx
             self.y += dy
             self.rect.topleft = (self.x, self.y)
             self.mask = pygame.mask.from_surface(self.image)  # Update mask position
-            print(f"Moved to ({self.x}, {self.y})")  # Debugging print statement
+            # print(f"Moved to ({self.x}, {self.y})")  # Debugging print statement
 
     def move_right(self):
         self.move(self.speed, 0)

@@ -4,11 +4,11 @@ import math
 
 
 class Projectile:
-    def __init__(self, screen_width: int, screen_height: int):
+    def __init__(self, screen_width: int, screen_height: int, angle: float = math.pi):
         self.x = screen_width  # Start projectiles from the right of the screen
         self.y = random.randint(0, screen_height)
         self.speed = random.randint(5, 10)  # Increase speed range
-        self.angle = math.pi  # Make projectiles move to the left
+        self.angle = angle  # Make projectiles move to the left
         self.dx = self.speed * math.cos(self.angle)
         self.dy = self.speed * math.sin(self.angle)
 
@@ -26,6 +26,7 @@ class Projectile:
         self.x += self.dx
         self.y += self.dy
         self.rect.topleft = (int(self.x), int(self.y))
+        print(f"Projectile moved to ({self.x}, {self.y})")
 
     def draw(self, screen: pygame.Surface):
         screen.blit(self.image, self.rect)
@@ -38,7 +39,29 @@ class Projectile:
         self.mask = pygame.mask.from_surface(self.image)
 
     def reset(self, screen_width: int, screen_height: int):
-        self.x = screen_width  # Start projectiles from the right of the screen
-        self.y = random.randint(0, screen_height)
+        directions = {
+            "top": math.pi,  # bottom
+            "bottom": 0,  # top
+            "left": math.pi / 2,  # right
+            "right": 3 * math.pi / 2,  # left
+        }
+        self.angle = random.choice(list(directions.values()))
+        if self.angle == math.pi:  # bottom
+            self.x = random.randint(0, screen_width)
+            self.y = 0
+        elif self.angle == 0:  # top
+            self.x = random.randint(0, screen_width)
+            self.y = screen_height
+        elif self.angle == math.pi / 2:  # right
+            self.x = 0
+            self.y = random.randint(0, screen_height)
+        elif self.angle == 3 * math.pi / 2:  # left
+            self.x = screen_width
+            self.y = random.randint(0, screen_height)
         self.speed = random.randint(5, 10)  # Increase speed range
-        self.angle = math.pi  # Make projectiles move to the left
+        self.dx = self.speed * math.cos(self.angle)
+        self.dy = self.speed * math.sin(self.angle)
+
+        print(
+            f"Projectile reset at ({self.x}, {self.y}) with angle {self.angle}"
+        )  # Add this line
