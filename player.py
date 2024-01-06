@@ -7,7 +7,10 @@ class Player:
     def __init__(self, screen_width, screen_height):
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.x, self.y = 100, 100
+        self.x, self.y = (
+            165,  # Default spawn point x-coordinate
+            290,  # Default spawn point y-coordinate
+        )
         self.speed = 6
         self.current_sprite = 0
         self.state = "idle"
@@ -81,10 +84,12 @@ class Player:
         - Args: dx (int): change in x position, dy (int): change in y position
         """
         if self.is_in_bounds(dx, dy):
+            print(f"Moving from ({self.x}, {self.y})")  # Debugging print statement
             self.x += dx
             self.y += dy
             self.rect.topleft = (self.x, self.y)
             self.mask = pygame.mask.from_surface(self.image)  # Update mask position
+            print(f"Moved to ({self.x}, {self.y})")  # Debugging print statement
 
     def move_right(self):
         self.move(self.speed, 0)
@@ -129,11 +134,16 @@ class Player:
             self.idle()  # Set the player state to 'idle'
 
     def reset(self):
-        self.x, self.y = 100, 100
+        self.x, self.y = (
+            165,  # Default spawn point x-coordinate
+            290,  # Default spawn point y-coordinate
+        )  # Reset player position to the middle of the screen
+        # print(f"Reset to ({self.x}, {self.y})")  # Debugging print statement
+        self.rect.topleft = (self.x, self.y)  # Update the rect attribute
         self.speed = 5
         self.current_sprite = 0
         self.state = "idle"
-        self.facing_right = False
+        self.facing_right = True
         self.score = 0  # Reset score
         self.is_dead = False  # Reset is_dead
         self.update_sprite()
