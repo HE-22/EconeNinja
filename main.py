@@ -115,7 +115,8 @@ def main():
                     )
 
         player.check_movement()
-        player.update_sprite()
+        if not player.is_hurt:
+            player.update_sprite()
 
         background.draw()
         coin_spawner.draw_coins(screen)
@@ -126,12 +127,16 @@ def main():
 
         def handle_collision():
             player.health -= 1
-            if player.health <= 0:
+            if player.health <= 0:  # If player's health is 0 or less
                 nonlocal death_animation_frame
                 death_animation_frame = 0
                 player.is_dead = True
+            else:  # If player's health is greater than 0
+                player.is_hurt = True  # Set is_hurt to True to play the hurt animation
+                print("Handle collision: Player is hurt")  # Debug print statement
 
         player.check_projectile_collisions(projectile_shooter, handle_collision)
+        # print(f"Player is hurt: {player.is_hurt}")  # Debug print statement
 
         if player.is_dead:
             if death_animation_frame < len(player.dead_sprites):

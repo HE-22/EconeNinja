@@ -31,6 +31,7 @@ class Player:
         self.mask = pygame.mask.from_surface(self.image)
         self.facing_right = False
         self.score = 0  # Added score attribute
+        self.hurt_frame_counter = 0  # Added hurt_frame_counter attribute
         self.is_dead = False
         self.is_hurt = False
         self.invincible = False  # Added invincible attribute
@@ -99,7 +100,20 @@ class Player:
         if self.is_dead:  # If player is dead, play death animation
             sprite_list = self.dead_sprites if self.health <= 0 else self.hurt_sprites
         elif self.is_hurt:  # If player is hurt, play hurt animation
-            sprite_list = next(self.hurt_animation)
+            if (
+                self.hurt_frame_counter < len(self.hurt_sprites) * 10
+            ):  # Multiply by the number of frames per sprite
+                sprite_list = next(self.hurt_animation)
+                self.hurt_frame_counter += 1
+                print(
+                    f"Hurt frame counter: {self.hurt_frame_counter}"
+                )  # Debug print statement
+            else:  # If the hurt animation is finished
+                self.is_hurt = False
+                print("Hurt animation finished")  # Debug print statement
+                sprite_list = (
+                    self.idle_sprites if self.state == "idle" else self.running_sprites
+                )
         else:
             sprite_list = (
                 self.idle_sprites if self.state == "idle" else self.running_sprites
@@ -233,13 +247,19 @@ class Player:
             offset_y = projectile.rect.top - self.rect.top
             if self.mask.overlap(projectile.mask, (offset_x, offset_y)):
                 logging.info("Collision detected!")
-                projectile_shooter.active_projectiles.remove(
-                    projectile
-                )  # Remove the projectile that collided
-                self.hit_sound.play()  # Play hit sound
-                self.is_hurt = True  # Set is_hurt to True
-                self.update_sprite()  # Update sprite to play hurt animation
-                self.is_hurt = False  # Set is_hurt back to False
+                projectile_shooter.active_projectiles.remove(projectile)
+                self.hit_sound.play()
+                if (
+                    self.health <= 1
+                ):  # Changed condition to check if health is less than or equal to 1
+                    self.is_dead = True
+                else:
+                    self.is_hurt = True
+                    print("Player is hurt!")
+                    self.hurt_frame_counter = 0  # Start the hurt_frame_counter
+                    self.hurt_animation = (
+                        self.play_hurt_animation()
+                    )  # Start the hurt animation
                 on_collision()  # Callback function to handle collision
 
     def play_death_sound(self):
