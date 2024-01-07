@@ -1,5 +1,8 @@
 import pygame
 from high_score import get_high_score  # Added this line
+from config import (
+    DEMON_GAME_OVER_PATH,
+)  # Added this line to import the game over sound path from config
 
 
 class RetryScreen:
@@ -61,9 +64,9 @@ class RetryScreen:
         )
 
         # Load the game over sound effect
-        self.game_over_sound = pygame.mixer.Sound(
-            "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/demon_game_over.mp3"
-        )
+        # self.game_over_sound = pygame.mixer.Sound(
+        #     GAME_OVER_SOUND_PATH  # Changed this line to use the game over sound path from config
+        # )
 
         # Paths to the high score and normal game over music
         self.high_score_music = "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/highscore.ogg"
@@ -75,7 +78,7 @@ class RetryScreen:
         pygame.mixer.music.stop()
 
         # Play both sounds
-        self.game_over_sound.play()
+        # self.game_over_sound.play()
 
         # Check if a new high score was achieved and play the appropriate music
         if self.new_high_score:
@@ -111,11 +114,11 @@ class RetryScreen:
                 if event.type == pygame.QUIT or (
                     event.type == pygame.KEYDOWN and event.key == pygame.K_q
                 ):
-                    self.game_over_sound.stop()
+                    # self.game_over_sound.stop()
                     pygame.mixer.music.stop()
                     pygame.quit()
                     return False  # Do not retry
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                    self.game_over_sound.stop()
+                    # self.game_over_sound.stop()
                     pygame.mixer.music.stop()
                     return True  # Retry

@@ -1,16 +1,12 @@
 import logging
 import pygame
 import math
-import yaml
-
-
-# Load configuration from config.yaml
-with open("config.yaml", "r") as stream:
-    config = yaml.safe_load(stream)
-
-
-HIT_SOUND_PATH_1 = config["hit_sound_1_path"]
-NORMALIZE_PLAYER_MOVEMENT_FLAG = config["normalize_player_movement_flag"]
+from config import (
+    HIT_SOUND_1_PATH,
+    NORMALIZE_PLAYER_MOVEMENT_FLAG,
+    PLAYER_SPEED,
+    DEATH_SOUND_PATH,
+)
 
 
 class Player:
@@ -21,7 +17,7 @@ class Player:
             165,  # Default spawn point x-coordinate
             290,  # Default spawn point y-coordinate
         )
-        self.speed = config["player_speed"]
+        self.speed = PLAYER_SPEED
         self.current_sprite = 0
         self.state = "idle"
         self.scale_factor = (60, 60)
@@ -36,10 +32,8 @@ class Player:
         self.is_hurt = False
         self.invincible = False  # Added invincible attribute
         self.health = 3  # Added health attribute
-        self.death_sound = pygame.mixer.Sound(
-            "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/sfx/bruh.mp3"
-        )  # Load death sound
-        self.hit_sound = pygame.mixer.Sound(HIT_SOUND_PATH_1)  # Load hit sound
+        self.death_sound = pygame.mixer.Sound(DEATH_SOUND_PATH)  # Load death sound
+        self.hit_sound = pygame.mixer.Sound(HIT_SOUND_1_PATH)  # Load hit sound
         self.hurt_animation = None  # Initialize hurt_animation as None
 
     def normalize_movement(self, dx, dy):
@@ -203,7 +197,7 @@ class Player:
         )  # Reset player position to the middle of the screen
         # print(f"Reset to ({self.x}, {self.y})")  # Debugging print statement
         self.rect.topleft = (self.x, self.y)  # Update the rect attribute
-        self.speed = config["player_speed"]
+        self.speed = PLAYER_SPEED  # Reset player speed
         self.current_sprite = 0
         self.state = "idle"
         self.facing_right = True

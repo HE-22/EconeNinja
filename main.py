@@ -1,7 +1,6 @@
 import pygame
 import sys
 import math
-import yaml
 import random
 
 from player import Player
@@ -15,18 +14,16 @@ from difficulty_manager import DifficultyManager
 from debug_overlay import DebugOverlay
 from scoreboard import Scoreboard
 
-# Load configuration from config.yaml
-with open("config.yaml", "r") as config_file:
-    config = yaml.safe_load(config_file)
-
-HYPERLOOP_AUDIO_PATH = config["hyperloop_audio_path"]
-SCREEN_WIDTH = config["screen"]["width"]
-SCREEN_HEIGHT = config["screen"]["height"]
-CLOCK_TICK_RATE = config["clock_tick_rate"]
-PROJECTILE_TIMER_INTERVAL = config["projectile_timer_interval"]
-DIFFICULTY_TIMER_INTERVAL = config["difficulty_timer_interval"]
-GAME_TITLE = config["game_title"]
-DEBUG_MODE = config["debug_mode"]
+from config import (
+    HYPERLOOP_AUDIO_PATH,
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+    CLOCK_TICK_RATE,
+    PROJECTILE_TIMER_INTERVAL,
+    DIFFICULTY_TIMER_INTERVAL,
+    GAME_TITLE,
+    DEBUG_MODE,
+)
 
 
 def reset_game_state(player, projectile_shooter, coin_spawner, difficulty_manager):
@@ -173,7 +170,7 @@ def main():
         if DEBUG_MODE:
             # debug_overlay.add_value("Player X", player.x)
             # debug_overlay.add_value("Player Y", player.y)
-            debug_overlay.add_value("Score", player.score)
+            # debug_overlay.add_value("Score", player.score)
             debug_overlay.add_value(
                 "Difficulty", difficulty_manager.get_difficulty_factor()
             )
@@ -187,7 +184,7 @@ def main():
                 "Direction change speed",
                 difficulty_manager.get_direction_change_speed(),
             )
-            debug_overlay.add_value("Player is hurt", player.is_hurt)
+
             debug_overlay.draw(screen)
 
         pygame.display.flip()

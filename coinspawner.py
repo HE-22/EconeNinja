@@ -1,6 +1,7 @@
 import pygame
 import random
 from coin import Coin
+from config import ECONE_SPRITE_PATH
 
 
 class CoinSpawner:

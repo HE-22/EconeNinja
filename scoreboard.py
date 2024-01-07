@@ -1,14 +1,5 @@
 import pygame
-import yaml
-
-with open("config.yaml", "r") as file:
-    config = yaml.safe_load(file)
-
-GAME_FONT_PATH = config["game_font_path"]
-SCOREBOARD_FONT_SIZE = config["scoreboard_font_size"]
-SCREEN_WIDTH = config["screen"]["width"]
-HEART_SPRITE_PATH = config["heart_sprite_path_2"]
-ECONE_SPRITE_PATH = config["econe_spirte_path"]
+from config import GAME_FONT_PATH, SCOREBOARD_FONT_SIZE, SCREEN_WIDTH, ECONE_SPRITE_PATH
 
 
 class Scoreboard:
