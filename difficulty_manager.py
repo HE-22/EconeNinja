@@ -27,13 +27,13 @@ class DifficultyManager:
     def get_projectile_speed(self):
         """
         Returns the current average speed of the projectiles.
-        The speed is capped at 10.
+        The speed gradually progresses to 10 as the top speed.
         """
-        # if self.current_level == 0:  # At the start of the game
-        #     return 1  # Set a fixed speed
-        # else:
-        speed = random.randint(1, 10) * self.get_difficulty_factor()
-        return min(speed, 10)
+        # Calculate the speed progression factor
+        speed_progression_factor = min(10, self.current_level + 1)
+        # Calculate the speed based on the progression factor
+        speed = random.randint(1, speed_progression_factor)
+        return speed
 
     def get_projectile_count(self):
         """
