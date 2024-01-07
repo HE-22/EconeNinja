@@ -49,7 +49,12 @@ class ProjectileShooter:
                 and 0 <= projectile.y <= self.screen_height
             ):
                 self.active_projectiles.remove(projectile)
-                self.spawn_projectile()  # Keep the number of projectiles consistent
+                # Only spawn a new projectile if the number of active projectiles is less than the current projectile count
+                if (
+                    len(self.active_projectiles)
+                    < self.difficulty_manager.get_projectile_count()
+                ):
+                    self.spawn_projectile()
             else:
                 projectile.draw(screen)
 
@@ -57,7 +62,7 @@ class ProjectileShooter:
         """
         Resets the state of the ProjectileShooter.
         """
-        self.active_projectiles = []
+        self.active_projectiles.clear()  # Clear the list of active projectiles
         self.update_projectiles()
 
     def update_projectiles(self):

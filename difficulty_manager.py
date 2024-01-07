@@ -1,4 +1,5 @@
 import random
+import math
 
 
 class DifficultyManager:
@@ -12,7 +13,7 @@ class DifficultyManager:
         """
         self.time_elapsed += delta_time
 
-        # Increase difficulty every 10 seconds
+        # Increase difficulty every 5 seconds
         if self.time_elapsed >= 5000:
             self.current_level += 1
             self.time_elapsed = 0
@@ -21,21 +22,24 @@ class DifficultyManager:
         """
         Returns the current difficulty factor.
         """
-        return 1 + self.current_level * 0.1
+        return 1 + self.current_level * 0.05
 
     def get_projectile_speed(self):
         """
         - Returns the current average speed of the projectiles.
-        - The speed is capped at 10.
+        - The speed is influenced by the difficulty factor and capped at 10.
         """
-        speed = random.randint(1, 6) * self.get_difficulty_factor()
+        factor = self.get_difficulty_factor()
+        speed = random.uniform(1, factor)
         return min(speed, 10)
 
     def get_projectile_count(self):
         """
         Returns the current amount of projectiles.
         """
-        return 5 + self.current_level
+        return (
+            10 + self.current_level * 2
+        )  # Increase the number of projectiles with the level
 
     def get_direction_change_speed(self):
         """
