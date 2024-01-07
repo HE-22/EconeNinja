@@ -3,9 +3,9 @@ import pygame
 
 
 class Coin:
-    def __init__(self, screen_width: int, screen_height: int):
-        self.x = random.randint(0, screen_width)
-        self.y = random.randint(0, screen_height)
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
 
         # List of coin images
         chocolate = "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/sprites/collectable/chocolate.png"
@@ -29,3 +29,11 @@ class Coin:
 
     def draw(self, screen: pygame.Surface):
         screen.blit(self.image, self.rect)
+
+    def distance_to(self, other_coin):
+        """
+        - Calculates the Euclidean distance to another coin.
+        - Args: other_coin (Coin): The other coin to calculate the distance to.
+        - Returns: float: The distance to the other coin.
+        """
+        return ((self.x - other_coin.x) ** 2 + (self.y - other_coin.y) ** 2) ** 0.5

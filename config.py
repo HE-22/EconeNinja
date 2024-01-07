@@ -34,3 +34,6 @@ DEATH_SOUND_PATH = (
 DEMON_GAME_OVER_PATH = (
     "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/demon_game_over.mp3"
 )
+INITIAL_COIN_COUNT = 4
+COIN_SPAWN_MARGIN = 12  # How far away from the edge of the screen coins can spawn
+MIN_COIN_DISTANCE = 100  # Minimum distance between coins

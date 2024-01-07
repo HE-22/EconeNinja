@@ -1,15 +1,16 @@
 import pygame
 import sys
+from config import SCREEN_HEIGHT, SCREEN_WIDTH
 
 
 class StartScreen:
-    def __init__(self, screen_width, screen_height):
+    def __init__(self):
         """
         - Initialize the IntroScreen class.
         - Args: screen_width (int): width of the screen, screen_height (int): height of the screen
         """
-        self.screen_width = screen_width
-        self.screen_height = screen_height
+        self.screen_width = SCREEN_WIDTH
+        self.screen_height = SCREEN_HEIGHT
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         self.font = pygame.font.Font(
             "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/fonts/PixeloidSansBold.ttf",
@@ -21,8 +22,8 @@ class StartScreen:
         self.play_button = pygame.transform.scale(self.play_button, (100, 50))
         self.play_button_rect = self.play_button.get_rect()
         self.play_button_rect.center = (
-            self.screen_width / 2 + 5,
-            self.screen_height / 2 + 250,
+            int(self.screen_width / 2 + 5),
+            int(self.screen_height / 2 + 250),
         )
         self.player_idle_sprites = [
             pygame.image.load(
@@ -40,7 +41,7 @@ class StartScreen:
             "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/sprites/map/start_screen.png"
         )
         self.background_image = pygame.transform.scale(
-            self.background_image, (screen_width, screen_height)
+            self.background_image, (self.screen_width, self.screen_height)
         )
 
     def draw_text(self, text, surface, x, y):

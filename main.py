@@ -63,20 +63,20 @@ def main():
     difficulty_manager = DifficultyManager()
 
     if SHOW_START_SCREEN:
-        start_screen = StartScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
+        start_screen = StartScreen()
         start_screen.run()
 
     pygame.mixer.music.load(HYPERLOOP_AUDIO_PATH)
     pygame.mixer.music.play(loops=-1)
 
     player = Player(SCREEN_WIDTH, SCREEN_HEIGHT)
-    # player.invincible = DEBUG_MODE
+    player.invincible = DEBUG_MODE
 
     projectile_shooter = ProjectileShooter(
         SCREEN_WIDTH, SCREEN_HEIGHT, difficulty_manager
     )
     background = Background(screen)
-    coin_spawner = CoinSpawner(SCREEN_WIDTH, SCREEN_HEIGHT)
+    coin_spawner = CoinSpawner()
 
     scoreboard = Scoreboard(10)
 
