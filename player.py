@@ -40,9 +40,7 @@ class Player:
             "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/sfx/bruh.mp3"
         )  # Load death sound
         self.hit_sound = pygame.mixer.Sound(HIT_SOUND_PATH_1)  # Load hit sound
-        self.hurt_animation = (
-            self.play_hurt_animation()
-        )  # Added hurt_animation attribute
+        self.hurt_animation = None  # Initialize hurt_animation as None
 
     def normalize_movement(self, dx, dy):
         """
@@ -121,8 +119,8 @@ class Player:
 
         self.current_sprite = (self.current_sprite + 0.1) % len(sprite_list)
         self.image = sprite_list[int(self.current_sprite)]
-        if self.facing_right:
-            self.image = pygame.transform.flip(self.image, True, False)
+        # if self.facing_right:
+        #     self.image = pygame.transform.flip(self.image, True, False)
         self.rect.size = self.image.get_size()
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -211,11 +209,15 @@ class Player:
         self.facing_right = True
         self.score = 0  # Reset score
         self.is_dead = False  # Reset is_dead
+        self.is_hurt = False  # Reset is_hurt
         self.health = 3  # Reset health
         self.update_sprite()
 
     def draw(self, screen):
-        screen.blit(self.image, self.rect.topleft)
+        image = self.image
+        if self.facing_right:
+            image = pygame.transform.flip(image, True, False)
+        screen.blit(image, self.rect.topleft)
 
     # Added collect_coins method
     def collect_coins(self, coin_spawner):
