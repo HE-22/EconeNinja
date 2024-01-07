@@ -12,5 +12,5 @@ screen:
 clock_tick_rate: 60
 projectile_timer_interval: 5000
 difficulty_timer_interval: 30000
-debug_mode: true 
+debug_mode: true
 player_speed: 6

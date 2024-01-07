@@ -30,6 +30,9 @@ DEBUG_MODE = config["debug_mode"]
 
 
 def reset_game_state(player, projectile_shooter, coin_spawner, difficulty_manager):
+    print(
+        f"Before reset: player={player}, projectile_shooter={projectile_shooter}, difficulty_manager={difficulty_manager}"
+    )
     player.reset()
     projectile_shooter.reset()
     coin_spawner.reset()
@@ -37,6 +40,9 @@ def reset_game_state(player, projectile_shooter, coin_spawner, difficulty_manage
 
     # Call update_projectiles after difficulty_manager.reset
     projectile_shooter.update_projectiles()
+    print(
+        f"After reset: player={player}, projectile_shooter={projectile_shooter}, difficulty_manager={difficulty_manager}"
+    )
 
     pygame.mixer.music.stop()
     pygame.mixer.music.load(HYPERLOOP_AUDIO_PATH)

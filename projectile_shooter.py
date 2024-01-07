@@ -63,7 +63,17 @@ class ProjectileShooter:
         Resets the state of the ProjectileShooter.
         """
         self.active_projectiles.clear()  # Clear the list of active projectiles
-        self.update_projectiles()
+
+        # Spawn a fixed number of projectiles at the initial speed
+        for _ in range(self.difficulty_manager.get_projectile_count()):
+            speed = self.difficulty_manager.get_projectile_speed()
+            projectile = Projectile(
+                self.screen_width,
+                self.screen_height,
+                self.current_direction,
+                int(speed),
+            )
+            self.active_projectiles.append(projectile)
 
     def update_projectiles(self):
         """

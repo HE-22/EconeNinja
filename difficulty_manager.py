@@ -22,15 +22,17 @@ class DifficultyManager:
         """
         Returns the current difficulty factor.
         """
-        return 1 + self.current_level * 0.05
+        return 1 + self.current_level * 0.1
 
     def get_projectile_speed(self):
         """
-        - Returns the current average speed of the projectiles.
-        - The speed is influenced by the difficulty factor and capped at 10.
+        Returns the current average speed of the projectiles.
+        The speed is capped at 10.
         """
-        factor = self.get_difficulty_factor()
-        speed = random.uniform(1, factor)
+        # if self.current_level == 0:  # At the start of the game
+        #     return 1  # Set a fixed speed
+        # else:
+        speed = random.randint(1, 10) * self.get_difficulty_factor()
         return min(speed, 10)
 
     def get_projectile_count(self):
@@ -38,7 +40,7 @@ class DifficultyManager:
         Returns the current amount of projectiles.
         """
         return (
-            10 + self.current_level * 2
+            7 + self.current_level * 2
         )  # Increase the number of projectiles with the level
 
     def get_direction_change_speed(self):
@@ -46,7 +48,7 @@ class DifficultyManager:
         Returns the current speed at which to change the direction of the projectiles.
         """
         return (
-            10000 / self.get_difficulty_factor()
+            30000 / self.get_difficulty_factor()
         )  # Change direction more frequently as difficulty increases
 
     def reset(self):
@@ -55,6 +57,9 @@ class DifficultyManager:
         """
         self.current_level = 0
         self.time_elapsed = 0
+        print(
+            f"DifficultyManager reset: current_level={self.current_level}, time_elapsed={self.time_elapsed}"
+        )
 
     def __str__(self):
         """
