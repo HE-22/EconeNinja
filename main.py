@@ -1,3 +1,4 @@
+import logging
 import pygame
 import sys
 import math
@@ -13,6 +14,7 @@ from start_screen import StartScreen
 from difficulty_manager import DifficultyManager
 from debug_overlay import DebugOverlay
 from scoreboard import Scoreboard
+from pause_screen import PauseScreen
 
 from config import (
     HYPERLOOP_AUDIO_PATH,
@@ -54,6 +56,8 @@ def main():
     clock = pygame.time.Clock()  # Add this line
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    is_paused = False
+    paused_time = PauseScreen(screen)
     pygame.display.set_caption(GAME_TITLE)
 
     debug_overlay = DebugOverlay()
@@ -105,11 +109,19 @@ def main():
                 pygame.quit()
                 sys.exit()
             elif event.type == projectile_timer:
+                logging.debug("Projectile timer event")
                 projectile_shooter.set_direction(random.uniform(0, 2 * math.pi))
             elif event.type == difficulty_timer:
                 print(difficulty_manager)
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_d:
+                if event.key == pygame.K_ESCAPE:
+                    is_paused = not is_paused
+                    logging.debug(f"Escape key pressed, is_paused is now {is_paused}")
+                    if is_paused:
+                        pygame.mixer.music.pause()
+                    else:
+                        pygame.mixer.music.unpause()
+                elif event.key == pygame.K_d:
                     DEBUG_MODE = not DEBUG_MODE
                     player.invincible = DEBUG_MODE
                 elif DEBUG_MODE and event.key == pygame.K_r:
@@ -117,11 +129,17 @@ def main():
                         player, projectile_shooter, coin_spawner, difficulty_manager
                     )
 
+        if is_paused:
+            paused_time.draw()
+            pygame.display.flip()
+            continue  # Skip the rest of the loop when the game is paused
+
+        background.draw()  # Ensure background is drawn first in the game loop
+
         player.check_movement()
         if not player.is_hurt:
             player.update_sprite()
 
-        background.draw()
         coin_spawner.draw_coins(screen)
 
         projectile_shooter.update(screen)
