@@ -8,6 +8,7 @@ GAME_FONT_PATH = config["game_font_path"]
 SCOREBOARD_FONT_SIZE = config["scoreboard_font_size"]
 SCREEN_WIDTH = config["screen"]["width"]
 HEART_SPRITE_PATH = config["heart_sprite_path_2"]
+ECONE_SPRITE_PATH = config["econe_spirte_path"]
 
 
 class Scoreboard:
@@ -20,7 +21,11 @@ class Scoreboard:
         self.score = 0
         self.hearts = 3
         self.y = y
-        self.heart_image = pygame.image.load(HEART_SPRITE_PATH).convert_alpha()
+        original_heart_image = pygame.image.load(ECONE_SPRITE_PATH).convert_alpha()
+        width, height = original_heart_image.get_size()
+        self.heart_image = pygame.transform.scale(
+            original_heart_image, (width * 2, height * 2)
+        )  # Scale the image to 2x its original size while keeping aspect ratio
         self.heart_image.fill((255, 255, 255, 128), None, pygame.BLEND_RGBA_MULT)
 
     def draw(self, screen):

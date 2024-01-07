@@ -4,6 +4,7 @@ game_font_path: "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/fonts/Pixelo
 hit_sound_1_path: "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/sfx/hit_1.wav"
 heart_sprite_path_1: "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/sprites/scoreboard/heart_1.png"
 heart_sprite_path_2: "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/sprites/scoreboard/heart_2.png"
+econe_spirte_path: "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/sprites/collectable/econe.png"
 normalize_player_movement_flag: true
 scoreboard_font_size: 30
 screen:
