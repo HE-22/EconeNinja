@@ -7,6 +7,7 @@ from config import (
     PLAYER_LIVES,
     PLAYER_SPEED,
     DEATH_SOUND_PATH,
+    FAST_WHOOOSH_SOUND_PATH,
 )
 
 
@@ -19,6 +20,8 @@ class Player:
             290,  # Default spawn point y-coordinate
         )
         self.speed = PLAYER_SPEED
+        self.dash_speed = 2 * self.speed  # Dash speed is twice the normal speed
+        self.dash_length = 3  # Adjust this value to change the dash length
         self.current_sprite = 0
         self.state = "idle"
         self.scale_factor = (60, 60)
@@ -35,7 +38,9 @@ class Player:
         self.health = PLAYER_LIVES  # Added health attribute
         self.death_sound = pygame.mixer.Sound(DEATH_SOUND_PATH)  # Load death sound
         self.hit_sound = pygame.mixer.Sound(HIT_SOUND_1_PATH)  # Load hit sound
+        self.dash_sound = pygame.mixer.Sound(FAST_WHOOOSH_SOUND_PATH)  # Load dash sound
         self.hurt_animation = None  # Initialize hurt_animation as None
+        self.last_dx, self.last_dy = 0, 0  # Last non-zero movement direction
 
     def normalize_movement(self, dx, dy):
         """
@@ -156,6 +161,17 @@ class Player:
             self.mask = pygame.mask.from_surface(self.image)  # Update mask position
             # print(f"Moved to ({self.x}, {self.y})")  # Debugging print statement
 
+    def dash(self):
+        """
+        - Dash the player in the direction they're last moved.
+        """
+        self.dash_sound.play()  # Play dash sound
+        for _ in range(self.dash_length):
+            dx, dy = self.normalize_movement(
+                self.last_dx * self.dash_speed, self.last_dy * self.dash_speed
+            )
+            self.move(dx, dy)
+
     def move_right(self):
         dx, dy = self.normalize_movement(self.speed, 0)
         self.move(dx, dy)
@@ -186,20 +202,31 @@ class Player:
         keys = pygame.key.get_pressed()
         moving = False  # Flag to check if the player is moving
 
+        dx, dy = 0, 0
         if keys[pygame.K_LEFT]:
-            self.move_left()
+            dx -= self.speed
             moving = True
+            self.facing_right = False
         if keys[pygame.K_RIGHT]:
-            self.move_right()
+            dx += self.speed
             moving = True
+            self.facing_right = True
         if keys[pygame.K_UP]:
-            self.move_up()
+            dy -= self.speed
             moving = True
         if keys[pygame.K_DOWN]:
-            self.move_down()
+            dy += self.speed
             moving = True
 
-        if not moving:  # If none of the movement keys are pressed
+        if moving:  # If any of the movement keys are pressed
+            self.last_dx, self.last_dy = dx, dy  # Update last direction of movement
+
+        if keys[pygame.K_SPACE]:  # If space bar is pressed
+            self.dash()  # Dash in the direction of movement
+        elif moving:  # If any of the movement keys are pressed
+            self.move(dx, dy)  # Move in the direction of movement
+            self.state = "running"
+        else:  # If none of the movement keys are pressed
             self.idle()  # Set the player state to 'idle'
 
     def reset(self):

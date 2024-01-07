@@ -114,7 +114,9 @@ def main():
             elif event.type == difficulty_timer:
                 print(difficulty_manager)
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_SPACE:
+                    player.dash()
+                elif event.key == pygame.K_ESCAPE:
                     is_paused = not is_paused
                     logging.debug(f"Escape key pressed, is_paused is now {is_paused}")
                     if is_paused:
