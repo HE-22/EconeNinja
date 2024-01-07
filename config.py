@@ -20,6 +20,7 @@ ECONE_SPRITE_PATH = (
     "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/sprites/collectable/econe.png"
 )
 NORMALIZE_PLAYER_MOVEMENT_FLAG = True
+PLAYER_LIVES = 3
 SCOREBOARD_FONT_SIZE = 30
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -37,3 +38,7 @@ DEMON_GAME_OVER_PATH = (
 INITIAL_COIN_COUNT = 4
 COIN_SPAWN_MARGIN = 12  # How far away from the edge of the screen coins can spawn
 MIN_COIN_DISTANCE = 100  # Minimum distance between coins
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)

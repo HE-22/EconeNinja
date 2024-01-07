@@ -4,6 +4,7 @@ import math
 from config import (
     HIT_SOUND_1_PATH,
     NORMALIZE_PLAYER_MOVEMENT_FLAG,
+    PLAYER_LIVES,
     PLAYER_SPEED,
     DEATH_SOUND_PATH,
 )
@@ -31,7 +32,7 @@ class Player:
         self.is_dead = False
         self.is_hurt = False
         self.invincible = False  # Added invincible attribute
-        self.health = 3  # Added health attribute
+        self.health = PLAYER_LIVES  # Added health attribute
         self.death_sound = pygame.mixer.Sound(DEATH_SOUND_PATH)  # Load death sound
         self.hit_sound = pygame.mixer.Sound(HIT_SOUND_1_PATH)  # Load hit sound
         self.hurt_animation = None  # Initialize hurt_animation as None
@@ -95,7 +96,14 @@ class Player:
             if (
                 self.hurt_frame_counter < len(self.hurt_sprites) * 10
             ):  # Multiply by the number of frames per sprite
-                sprite_list = next(self.hurt_animation)
+                if self.hurt_animation is not None:
+                    sprite_list = next(self.hurt_animation)
+                else:
+                    sprite_list = (
+                        self.idle_sprites
+                        if self.state == "idle"
+                        else self.running_sprites
+                    )
                 self.hurt_frame_counter += 1
                 print(
                     f"Hurt frame counter: {self.hurt_frame_counter}"

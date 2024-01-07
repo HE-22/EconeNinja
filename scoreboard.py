@@ -1,5 +1,14 @@
 import pygame
-from config import GAME_FONT_PATH, SCOREBOARD_FONT_SIZE, SCREEN_WIDTH, ECONE_SPRITE_PATH
+from config import (
+    GAME_FONT_PATH,
+    SCOREBOARD_FONT_SIZE,
+    SCREEN_WIDTH,
+    ECONE_SPRITE_PATH,
+    PLAYER_LIVES,
+    WHITE,
+    RED,
+    BLACK,
+)
 
 
 class Scoreboard:
@@ -10,7 +19,7 @@ class Scoreboard:
         """
         self.font = pygame.font.Font(GAME_FONT_PATH, SCOREBOARD_FONT_SIZE)
         self.score = 0
-        self.hearts = 3
+        self.hearts = PLAYER_LIVES
         self.y = y
         original_heart_image = pygame.image.load(ECONE_SPRITE_PATH).convert_alpha()
         width, height = original_heart_image.get_size()
@@ -24,16 +33,18 @@ class Scoreboard:
         - Draw the scoreboard on the screen.
         - Args: screen (pygame.Surface): the screen to draw on
         """
-        score_text = self.font.render(f"Score: {self.score}", True, (255, 255, 255))
-        score_x = SCREEN_WIDTH - score_text.get_width() - 10
+        score_text = self.font.render(f"{self.score}", True, BLACK)
+        score_x = 10  # Changed this line
         screen.blit(score_text, (score_x, self.y))
 
         for i in range(self.hearts):
             screen.blit(
                 self.heart_image,
                 (
-                    SCREEN_WIDTH - (i + 2) * self.heart_image.get_width() - i * 10,
-                    self.y + 30,
+                    SCREEN_WIDTH
+                    - (i + 1) * self.heart_image.get_width()
+                    - 10,  # Changed this line
+                    self.y - 8,  # adjusted 8 to even out the heart y pos with the score
                 ),
             )
 
