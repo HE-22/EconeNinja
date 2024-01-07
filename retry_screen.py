@@ -64,9 +64,9 @@ class RetryScreen:
         )
 
         # Load the game over sound effect
-        # self.game_over_sound = pygame.mixer.Sound(
-        #     GAME_OVER_SOUND_PATH  # Changed this line to use the game over sound path from config
-        # )
+        self.game_over_sound = pygame.mixer.Sound(
+            DEMON_GAME_OVER_PATH  # Changed this line to use the game over sound path from config
+        )
 
         # Paths to the high score and normal game over music
         self.high_score_music = "/Users/hassen/local_Dev/GAMES/sample_pygame/assets/audio/music/highscore.ogg"
@@ -78,7 +78,7 @@ class RetryScreen:
         pygame.mixer.music.stop()
 
         # Play both sounds
-        # self.game_over_sound.play()
+        self.game_over_sound.play()
 
         # Check if a new high score was achieved and play the appropriate music
         if self.new_high_score:
