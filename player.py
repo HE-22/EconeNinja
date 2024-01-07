@@ -134,9 +134,13 @@ class Player:
         """
         proposed_x = self.x + dx
         proposed_y = self.y + dy
+        sprite_width, sprite_height = self.image.get_size()
+        title_bar_and_borders_height = -10  # Adjust this value as needed
         return (
-            0 <= proposed_x <= self.screen_width
-            and 0 <= proposed_y <= self.screen_height
+            0 <= proposed_x <= self.screen_width - sprite_width
+            and 0
+            <= proposed_y
+            <= self.screen_height - sprite_height - title_bar_and_borders_height
         )
 
     def move(self, dx, dy):
